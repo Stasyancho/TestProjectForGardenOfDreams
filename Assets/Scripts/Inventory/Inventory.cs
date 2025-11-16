@@ -65,12 +65,19 @@ public class Inventory : MonoBehaviour
     }
     
     // Удаление предмета из слота
-    public void RemoveItem(int slotIndex, int quantity = 1)
+    public bool RemoveItem(Item item, int quantity = 1)
     {
-        if (slotIndex < 0 || slotIndex >= slots.Count) return;
+        var index = slots.FindIndex(slot => slot.item == item);
+        return RemoveItem(index, quantity);
+    }
+    
+    // Удаление предмета из слота
+    public bool RemoveItem(int slotIndex, int quantity = 1)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Count) return false;
         
         var slot = slots[slotIndex];
-        if (slot.IsEmpty) return;
+        if (slot.IsEmpty) return false;
         
         if (quantity >= slot.quantity)
         {
@@ -82,6 +89,7 @@ public class Inventory : MonoBehaviour
         }
         
         OnInventoryChanged?.Invoke(this);
+        return true;
     }
     
     // Получение первого пустого слота
