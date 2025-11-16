@@ -17,8 +17,11 @@ public class FollowingCamera : MonoBehaviour
 
     void CameraMove()
     {
-        var currentVector = new Vector3(_character.transform.position.x, _character.transform.position.y, -1);
-        transform.position = Vector3.Lerp(transform.position, currentVector, _returnSpeed * Time.deltaTime);
+        if (_character != null)
+        {
+            var currentVector = new Vector3(_character.transform.position.x, _character.transform.position.y, -1);
+            transform.position = Vector3.Lerp(transform.position, currentVector, _returnSpeed * Time.deltaTime);
+        }
     }
 }
 

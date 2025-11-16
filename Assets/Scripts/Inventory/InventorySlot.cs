@@ -1,9 +1,12 @@
+using Newtonsoft.Json;
+
 [System.Serializable]
 public class InventorySlot
 {
     public Item item;
     public int quantity;
     
+    [JsonIgnore]
     public bool IsEmpty => item == null || quantity == 0;
     
     public void Clear()

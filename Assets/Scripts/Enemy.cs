@@ -42,12 +42,18 @@ public class Enemy : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player") && !other.isTrigger)
+        {
             target = other.transform;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
     }
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player") && !other.isTrigger)
+        {
             target = null;
+            rb.bodyType = RigidbodyType2D.Static;
+        }
     }
 
     private void DropResourses()

@@ -1,25 +1,51 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
     [SerializeField] private int inventorySize = 20;
     [SerializeField] private List<InventorySlot> slots;
+    [SerializeField] private List<Item> allItems;
     
     // События для обновления UI
     public System.Action<Inventory> OnInventoryChanged;
     
-    private void Awake()
+    public void InitializeSlots(List<InventorySlot> savedSlots = null)
     {
-        InitializeSlots();
+        if (slots != null)
+        {
+            foreach (var inventorySlot in savedSlots)
+            {
+                if (inventorySlot.item != null)
+                    inventorySlot.item = allItems.FirstOrDefault(item => item.itemName == inventorySlot.item.itemName);
+            }
+            slots = savedSlots;
+        }
+        else
+        {
+            slots = new List<InventorySlot>();
+            for (int i = 0; i < inventorySize; i++)
+            {
+                slots.Add(new InventorySlot());
+            }
+        }
     }
     
-    private void InitializeSlots()
+    private void Update()
     {
-        slots = new List<InventorySlot>();
-        for (int i = 0; i < inventorySize; i++)
+        //Для тестов
+        if (Input.GetKeyDown(KeyCode.Alpha1) && allItems.Count > 0)
         {
-            slots.Add(new InventorySlot());
+            AddItem(allItems[0]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2) && allItems.Count > 1)
+        {
+            AddItem(allItems[1]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3) && allItems.Count > 2)
+        {
+            AddItem(allItems[2]);
         }
     }
     

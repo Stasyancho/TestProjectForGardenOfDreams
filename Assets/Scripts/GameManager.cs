@@ -1,43 +1,41 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private Inventory inventory;
     [SerializeField] private InventoryUI inventoryUI;
-    [SerializeField] private Item[] testItems;
+    [SerializeField] private Item[] allItems;
+    
+    private string path = "Assets/Resources/SavedData/Inventory.json";
     
     private void Start()
     {
+        var savedInventory = LoadData();
+        inventory.InitializeSlots(savedInventory);
         inventoryUI.Initialize(inventory);
-        
-        // Тестирование - добавление предметов
-        if (testItems.Length > 0)
+    }
+
+    public void SaveData()
+    {
+        string json = JsonConvert.SerializeObject(inventory.GetSlots());
+
+        using (StreamWriter writer = new(path))
         {
-            inventory.AddItem(testItems[0], 5); // Добавить 5 предметов
-            inventory.AddItem(testItems[1], 1); // Добавить 1 предмет
+            writer.Write(json);
         }
     }
-    
-    private void Update()
+
+    private List<InventorySlot> LoadData()
     {
-        // Открытие/закрытие инвентаря по клавише I
-        if (Input.GetKeyDown(KeyCode.I))
+        using (StreamReader reader = new(path))
         {
-            inventoryUI.ToggleInventory();
-        }
-        
-        // Тест добавления предметов по клавишам
-        if (Input.GetKeyDown(KeyCode.Alpha1) && testItems.Length > 0)
-        {
-            inventory.AddItem(testItems[0]);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2) && testItems.Length > 1)
-        {
-            inventory.AddItem(testItems[1]);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3) && testItems.Length > 2)
-        {
-            inventory.AddItem(testItems[2]);
+            var json = reader.ReadToEnd();
+
+            return JsonConvert.DeserializeObject<List<InventorySlot>>(json);
         }
     }
 }
